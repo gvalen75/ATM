@@ -14,5 +14,6 @@ class BankAccountModelAssembler implements RepresentationModelAssembler<BankAcco
         return EntityModel.of(bankAccount,
                 linkTo(methodOn(BankAccountController.class).one(bankAccount.getId())).withSelfRel(),
                 linkTo(methodOn(BankAccountController.class).all()).withRel("BankAccounts"));
+
     }
 }
