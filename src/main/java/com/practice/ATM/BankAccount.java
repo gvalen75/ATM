@@ -10,13 +10,11 @@ import java.util.Objects;
 class BankAccount {
 
     private @Id @GeneratedValue Long id;
-    private Long accountNumber;
     private Double accountBalance;
 
     BankAccount(){}
 
-    public BankAccount(Long accountNumber, Double accountBalance) {
-        this.accountNumber = accountNumber;
+    public BankAccount(Double accountBalance) {
         this.accountBalance = accountBalance;
     }
 
@@ -28,14 +26,6 @@ class BankAccount {
         this.id = id;
     }
 
-    public Long getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
     public Double getAccountBalance() {
         return accountBalance;
     }
@@ -43,25 +33,30 @@ class BankAccount {
     public void setAccountBalance(Double accountBalance) {
         this.accountBalance = accountBalance;
     }
+    public void deposit(Double depositAmount){
+        this.accountBalance += depositAmount;
+    }
+    public void withdraw(Double withdrawAmount){
+        this.accountBalance -= withdrawAmount;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BankAccount that = (BankAccount) o;
-        return Objects.equals(id, that.id) && Objects.equals(accountNumber, that.accountNumber) && Objects.equals(accountBalance, that.accountBalance);
+        return Objects.equals(id, that.id)  && Objects.equals(accountBalance, that.accountBalance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountNumber, accountBalance);
+        return Objects.hash(id, accountBalance);
     }
 
     @Override
     public String toString() {
         return "BankAccount{" +
                 "id=" + id +
-                ", accountNumber=" + accountNumber +
                 ", accountBalance=" + accountBalance +
                 '}';
     }
