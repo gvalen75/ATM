@@ -14,15 +14,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 class BankAccountController {
-    BankAccountService bankAccountService;
+    BankAccountServiceImpl bankAccountService;
 
-    public BankAccountController(BankAccountService bankAccountService) {
+    public BankAccountController(BankAccountServiceImpl bankAccountService) {
         this.bankAccountService = bankAccountService;
     }
 
     @GetMapping("/BankAccounts")
     CollectionModel<EntityModel<BankAccount>> all(){
-        return bankAccountService.getBankAccounts();
+        List<EntityModel<BankAccount>> bankAccounts = bankAccountService.getBankAccounts();
+        return CollectionModel.of(bankAccounts, linkTo(methodOn(BankAccountController.class).all()).withSelfRel());
     }
     @GetMapping("/BankAccounts/{id}")
     EntityModel<BankAccount> one(@PathVariable Long id){
@@ -30,19 +31,23 @@ class BankAccountController {
     }
     @PostMapping("/BankAccounts")
     ResponseEntity<?> newBankAccount(@RequestBody BankAccount newBankAccount){
-        return bankAccountService.createBankAccount(newBankAccount);
+        EntityModel<BankAccount> entityModel = bankAccountService.createBankAccount(newBankAccount);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @PutMapping("/BankAccounts/{id}/Deposit")
     ResponseEntity<?> deposit(@RequestBody Double depositAmount, @PathVariable Long id){
-        return bankAccountService.deposit(id, depositAmount);
+        EntityModel<BankAccount> entityModel = bankAccountService.deposit(id, depositAmount);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
     @PutMapping("/BankAccounts/{id}/Withdraw")
     ResponseEntity<?> withdraw(@RequestBody Double withdrawAmount, @PathVariable Long id){
-        return bankAccountService.withdraw(id, withdrawAmount);
+        EntityModel<BankAccount> entityModel = bankAccountService.withdraw(id, withdrawAmount);
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
     @DeleteMapping("/BankAccounts/{id}")
     ResponseEntity<?> deleteAccount(@PathVariable Long id){
-        return bankAccountService.deleteBankAccount(id);
+        bankAccountService.deleteBankAccount(id);
+        return ResponseEntity.noContent().build();
     }
 }

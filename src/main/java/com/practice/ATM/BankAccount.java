@@ -14,12 +14,4 @@ public @Data class BankAccount {
     private @Id @GeneratedValue Long id;
     private @NonNull Double accountBalance;
 
-
-    public void deposit(Double depositAmount){
-        this.accountBalance += depositAmount;
-    }
-    public void withdraw(Double withdrawAmount){
-        this.accountBalance -= withdrawAmount;
-    }
-
 }

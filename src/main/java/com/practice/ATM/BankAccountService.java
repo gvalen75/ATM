@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface BankAccountService {
 
-    public abstract ResponseEntity<?> createBankAccount(BankAccount newBankAccount);
+    public abstract EntityModel<BankAccount> createBankAccount(BankAccount newBankAccount);
     public abstract EntityModel<BankAccount> getBankAccount(Long id);
-    public abstract CollectionModel<EntityModel<BankAccount>> getBankAccounts();
-    public abstract ResponseEntity<?> deleteBankAccount(Long id);
-    public abstract ResponseEntity<?> deposit(Long id, Double depositAmount);
-    public abstract ResponseEntity<?> withdraw(Long id, Double withdrawAmount);
+    public abstract List<EntityModel<BankAccount>>  getBankAccounts();
+    public abstract void deleteBankAccount(Long id);
+    public abstract EntityModel<BankAccount> deposit(Long id, Double depositAmount);
+    public abstract EntityModel<BankAccount> withdraw(Long id, Double withdrawAmount);
 }
