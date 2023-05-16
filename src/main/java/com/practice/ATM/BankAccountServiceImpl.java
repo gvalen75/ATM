@@ -20,7 +20,13 @@ class BankAccountServiceImpl implements BankAccountService {
     }
     @Override
     public List<BankAccount>  getBankAccounts() {
-        return repository.findAll();
+        List<BankAccount> bankAccounts = repository.findAll();
+        if(bankAccounts.isEmpty()){
+            throw new BankAccountNotFoundException(0L);
+        }
+        else{
+            return bankAccounts;
+        }
     }
 
     @Override
