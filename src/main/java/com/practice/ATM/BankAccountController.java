@@ -23,12 +23,12 @@ class BankAccountController {
     }
 
     @GetMapping("/BankAccounts")
-    CollectionModel<EntityModel<BankAccount>> all(){
+    CollectionModel<EntityModel<BankAccount>> all() throws BankAccountNotFoundException{
         List<EntityModel<BankAccount>> bankAccounts = bankAccountService.getBankAccounts().stream().map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(bankAccounts, linkTo(methodOn(BankAccountController.class).all()).withSelfRel());
     }
     @GetMapping("/BankAccounts/{id}")
-    EntityModel<BankAccount> one(@PathVariable Long id){
+    EntityModel<BankAccount> one(@PathVariable Long id) throws BankAccountNotFoundException{
         EntityModel<BankAccount> entityModel = assembler.toModel(bankAccountService.getBankAccount(id));
         entityModel.add(linkTo(methodOn(BankAccountController.class).deposit((double) 0, id)).withRel("Deposit"));
         entityModel.add(linkTo(methodOn(BankAccountController.class).withdraw((double) 0, id)).withRel("Withdraw"));
@@ -41,14 +41,14 @@ class BankAccountController {
     }
 
     @PutMapping("/BankAccounts/{id}/Deposit")
-    ResponseEntity<?> deposit(@RequestBody Double depositAmount, @PathVariable Long id){
+    ResponseEntity<?> deposit(@RequestBody Double depositAmount, @PathVariable Long id) throws BankAccountNotFoundException{
         EntityModel<BankAccount> entityModel = assembler.toModel(bankAccountService.deposit(id, depositAmount));
         entityModel.add(linkTo(methodOn(BankAccountController.class).deposit(depositAmount, id)).withRel("Deposit"));
         entityModel.add(linkTo(methodOn(BankAccountController.class).withdraw((double) 0, id)).withRel("Withdraw"));
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
     @PutMapping("/BankAccounts/{id}/Withdraw")
-    ResponseEntity<?> withdraw(@RequestBody Double withdrawAmount, @PathVariable Long id){
+    ResponseEntity<?> withdraw(@RequestBody Double withdrawAmount, @PathVariable Long id) throws BankAccountNotFoundException{
         EntityModel<BankAccount> entityModel = assembler.toModel(bankAccountService.withdraw(id, withdrawAmount));
         entityModel.add(linkTo(methodOn(BankAccountController.class).deposit((double) 0, id)).withRel("Deposit"));
         entityModel.add(linkTo(methodOn(BankAccountController.class).withdraw(withdrawAmount, id)).withRel("Withdraw"));
